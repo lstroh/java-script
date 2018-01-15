@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,QAAS;EACL,UAAU,EAAC,IAAI;;AAEnB,QAAS;EACL,MAAM,EAAG,GAAG;;ACJhB,QAAS;EACL,cAAc,EAAC,IAAI;EACnB,WAAW,EAAE,IAAI;EACjB,SAAS,EAAE,KAAK",
+"sources": ["../scss/partials/_btn.scss","../scss/partials/_span.scss"],
+"names": [],
+"file": "main.css"
+}

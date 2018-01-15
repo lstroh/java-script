@@ -1,0 +1,45 @@
+#newsweek_logo {
+  width: 229px; }
+
+.list-group-item a {
+  text-decoration: none;
+  color: black; }
+
+@media only screen and (min-width: 992px) {
+  .card-lg {
+    height: 300px; } }
+
+.strike {
+  display: block;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap; }
+
+.strike > span {
+  position: relative;
+  display: inline-block;
+  font-size: 19px;
+  text-transform: uppercase;
+  color: blue; }
+
+.strike > span:before,
+.strike > span:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 9999px;
+  height: 3px;
+  background: #FF0500; }
+
+.strike > span:before {
+  right: 100%;
+  margin-right: 15px; }
+
+.strike > span:after {
+  left: 100%;
+  margin-left: 15px; }
+
+.nav-item {
+  width: 80px; }
+
+/*# sourceMappingURL=main.css.map */

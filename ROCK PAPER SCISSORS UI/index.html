@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>ROCK PAPER SCISSORS UI</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+      <!-- content -->
+      <main>
+        <div class="container">
+          <div class="row">
+            <div class="col-3">
+              <div class="score alert alert-success text-center" id="playerScore" role="alert">
+                  Player score : 0
+               </div>
+            </div>
+            <div class="col-6 ">
+                <button type="button" class="btn btn-secondary" id="newgame">New Game</button>
+                <span class = "" id="msgSpan">Started a new Game! Good Luck !</span>
+            </div>
+            <div class = "col-3">
+               <div class="score alert alert-danger text-center" id="coumputerScore" role="alert">
+                  Computer score : 0
+              </div>
+            </div>  
+          </div>
+          <div class="row">
+            <div class="col-sm">
+              <button type="button" class="btn btn-outline-dark btn-block" id="rock"><i class="fa fa-hand-rock-o fa-lg" id="btnIcon" aria-hidden="true"></i>Rock</button>
+              <button type="button" class="btn btn-outline-dark btn-block" id="paper"><i class="fa fa-hand-paper-o fa-lg" id="btnIcon" aria-hidden="true"></i>Paper</button>
+              <button type="button" class="btn btn-outline-dark btn-block" id="scissors"><i class="fa fa-hand-scissors-o fa-lg" id="btnIcon" aria-hidden="true"></i>Scissors</button>
+            </div>
+            <div class="col-sm text-center">
+              <span>You have selected:</span><br>
+              <i class="fa fa-question-circle-o fa-5x " id="playerSelection" aria-hidden="true"></i>
+            </div>
+            <div class="col-sm text-center">
+              <span>The Computer have selected:</span><br>
+              <i class="fa fa-question-circle-o fa-5x " id="computerSelection" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      
+
+
+      <!-- end of content -->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
