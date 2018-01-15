@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Etch-A-Sketch</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+      <!-- content -->
+
+
+      <main>
+        <div class="container">
+          <div class="row">
+            <div class = "col-3">
+              Please Select filling color:<br>
+              <button type="button" class="btn btn-secondary btn-block" id = "gray">Gray</button>
+              <button type="button" class="btn btn-primary btn-block" id="rnd">Random</button>
+              <button type="button" class="btn btn-dark btn-block" id="rgb">10% Darker</button>
+            </div>
+            <div class="col-6" id="main_div">         
+            </div>
+            <div class = "col-3">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Please enter number of divs per line</label>
+                    <input type="text" class="form-control" id="number" placeholder="">
+                    <small id="emailHelp" class="form-text text-muted">The range is 1-64.</small>
+                    <button type="button" class="btn btn-outline-danger" id="gen" >Generate</button>
+                    <label class = "" id="warnings"></label>
+                 </div>
+              </div>
+          </div>
+        </div>
+      </main>
+
+
+      <!-- end of content -->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

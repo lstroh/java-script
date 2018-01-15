@@ -1,0 +1,11 @@
+.small_div {
+  box-sizing: border-box;
+  float: left; }
+
+#main_div {
+  height: 500px; }
+
+.gray_div {
+  background-color: gray; }
+
+/*# sourceMappingURL=main.css.map */
