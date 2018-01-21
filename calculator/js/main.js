@@ -1,3 +1,7 @@
+"use strict";
+
+var MAX_INT = 9999999.999;
+var MIN_INT = -999999.999;
 function isThisActuallyANumberDontLie( data ){
 	return ( typeof data === "number" && !isNaN(data) );
 }
@@ -13,6 +17,17 @@ function Operation(){
     this.a = NaN;
     this.b = NaN;
     this.op = "";
+}
+function checkNumber(num){
+    if(!isThisActuallyANumberDontLie(num)){
+        return false;
+    }
+    if(num >MAX_INT){
+        return false;
+    } else if(num < MIN_INT){
+        return false;
+    }
+    return true;
 }
 Operation.prototype.addNumber = function (num){
     if(!isThisActuallyANumberDontLie(num)){
@@ -61,15 +76,22 @@ Operation.prototype.isASet = function (){
         return false;
     }
 };
+Operation.prototype.isOPSet = function (){
+    if(this.op === ""){
+        return false;
+    } else {
+        return true;
+    }
+};
 Operation.prototype.isEq2A = function (num){
     var number;
     if((isThisActuallyANumberDontLie(num))){
         return (this.a === num);
     } else if(isThisAString(num)){
-        if((str.search(/\./)) >=0){
-            number = parseFloat(str);
+        if((num.search(/\./)) >=0){
+            number = parseFloat(num);
         } else{
-            number = parseInt(str,10);
+            number = parseInt(num,10);
         }
         return (this.a === number);
     } else {
@@ -112,26 +134,32 @@ function checkAndAlert(res,msg){
     }
 }
 function calculateAndUpdateResult(){
-    var res;
+    var res,resBool;
+    var targetResult = document.getElementById("result");
+    var furmulaResult = document.getElementById("furmula");
     if(mainOP.isAandBSet() === true){
         res = mainOP.calc();
         if(isThisActuallyANumberDontLie(res)){
-            var targetResult = document.getElementById("result");
-            var furmulaResult = document.getElementById("furmula");
-            var oldTargetText =  targetResult.textContent;
-            var oldFurmulatText =  furmulaResult.textContent;
-            if(Number.isInteger(res)){
-                targetResult.textContent = res.toString();
-                enableDotBtn();
-            } else {
-                targetResult.textContent = res.toFixed(3);
-                disableDotBtn();
+            resBool = checkNumber(res);
+            if(resBool === false){
+                checkAndAlert(resBool,"Number Overflow");
+                clearDisplayAndSettings(targetResult,furmulaResult);
+                return false;
+            } else {    
+                var oldTargetText =  targetResult.textContent;
+                var oldFurmulatText =  furmulaResult.textContent;
+                if(Number.isInteger(res)){
+                    targetResult.textContent = res.toString();
+                    enableDotBtn();
+                } else {
+                    targetResult.textContent = res.toFixed(3);
+                    disableDotBtn();
+                }    
+                furmulaResult.textContent = oldFurmulatText + mainOP.b + "=";
+                mainOP.resetA();
+                mainOP.resetB();
+                mainOP.resetOp();
             }    
-            furmulaResult.textContent = oldFurmulatText + mainOP.b + "=";
-            mainOP.resetA();
-            mainOP.resetB();
-            mainOP.resetOp();
-            mainOP.addNumber(res.toString());
         } else if(isThisAString(res)){
             checkAndAlert(false,res);
         } else if(res === false){
@@ -142,13 +170,21 @@ function calculateAndUpdateResult(){
     }
 }
 function addStringNumber(str){
-    var number;
+    var number,res;
+    var targetResult = document.getElementById("result");
+    var furmulaResult = document.getElementById("furmula");
     if(isThisAString(str)){
         if((str.search(/\./)) >=0){
             number = parseFloat(str);
         } else{
             number = parseInt(str,10);
         }
+        res = checkNumber(number);
+        if(res === false){
+            checkAndAlert(res,"Number Overflow");
+            clearDisplayAndSettings(targetResult,furmulaResult);
+            return false;
+        }    
         return mainOP.addNumber(number);
     } else {
         return false;
@@ -162,11 +198,59 @@ function enableDotBtn() {
     var btn = document.getElementById("btnDot");
     btn.disabled = false;
 }
+function removeLastCharInFurmula (){
+    var furmulaResult = document.getElementById("furmula"),str_len,newText;
+    str_len = furmulaResult.textContent.length;
+    newText = furmulaResult.textContent.slice(0,str_len-1);
+    furmulaResult.textContent = newText;
+}
+function updateResults4Op(_oldText,_targetResult,_furmulaResult,opNum,opText){
+    var res,oldText = _oldText,targetResult=_targetResult,furmulaResult=_furmulaResult;
+    if((mainOP.isASet()) && (mainOP.isOPSet())){
+        res = addStringNumber(oldText);
+        checkAndAlert(res,"Can't add number");
+        if(res === false){
+            return false;
+        }
+        calculateAndUpdateResult();
+        oldText =  targetResult.textContent;
+     }else if(mainOP.isAandBSet()){
+        res = addStringNumber(oldText);
+        checkAndAlert(res,"Can't add number");
+        if(res === false){
+            return false;
+        }
+        calculateAndUpdateResult();  
+     }      
+    res = addStringNumber(oldText);
+    checkAndAlert(res,"Can't add number");
+    if(res === false){
+        return false;
+    }    
+    mainOP.resetOp();
+    mainOP.setOp(opNum);
+    if(lastClick === "op"){
+        removeLastCharInFurmula();
+    }
+    lastClick = "op";
+    furmulaResult.textContent = oldText + opText; 
+}
+function clearDisplayAndSettings(_targetResult,_furmulaResult){
+    var targetResult = _targetResult,furmulaResult=_furmulaResult;
+    targetResult.textContent = "0";
+    furmulaResult.textContent = "";
+    mainOP.resetA();
+    mainOP.resetB();
+    mainOP.setOp();
+    enableDotBtn();
+    lastClick ="clear";
+}
 function handleBtnClick(e){
    var _btn=this,res="";
    var targetResult = document.getElementById("result");
    var furmulaResult = document.getElementById("furmula");
    var oldText =  targetResult.textContent;
+   var oldFurmulatText =  furmulaResult.textContent;
    var str_len,newText;
    switch (_btn.value) {
        case "undo":
@@ -206,44 +290,10 @@ function handleBtnClick(e){
             }
            break;
         case "mul": // 1
-            if(mainOP.isASet()){
-            }else if(mainOP.isAandBSet()){
-                res = addStringNumber(oldText);
-                checkAndAlert(res,"Can't add number");
-                calculateAndUpdateResult();
-            } else {
-                res = addStringNumber(oldText);
-                checkAndAlert(res,"Can't add number");
-            }    
-            mainOP.resetOp();
-            mainOP.setOp(1);
-            if(lastClick === "op"){
-                str_len = furmulaResult.textContent.length;
-                newText = furmulaResult.textContent.slice(0,str_len-1);
-                furmulaResult.textContent = newText;
-            }
-            lastClick = "op";
-            furmulaResult.textContent = oldText + "*";
+            updateResults4Op(oldText,targetResult,furmulaResult,1,"*");
            break;
         case "div": // 2
-            if(mainOP.isASet()){
-            }else if(mainOP.isAandBSet()){
-                res = addStringNumber(oldText);
-                checkAndAlert(res,"Can't add number");
-                calculateAndUpdateResult();
-            } else {
-                res = addStringNumber(oldText);
-                checkAndAlert(res,"Can't add number");
-            }
-            mainOP.resetOp();
-            mainOP.setOp(2);
-            if(lastClick === "op"){
-                str_len = furmulaResult.textContent.length;
-                newText = furmulaResult.textContent.slice(0,str_len-1);
-                furmulaResult.textContent = newText;
-            }
-            lastClick = "op";
-            furmulaResult.textContent = oldText + "/";
+            updateResults4Op(oldText,targetResult,furmulaResult,2,"/");
            break;
         case "dot":
             targetResult.textContent = oldText + ".";
@@ -251,68 +301,27 @@ function handleBtnClick(e){
             lastClick = "dot";
            break;
         case "btnClear":
-            targetResult.textContent = "0";
-            furmulaResult.textContent = "";
-            mainOP.resetA();
-            mainOP.resetB();
-            mainOP.setOp();
-            enableDotBtn();
-            lastClick ="clear";
+            clearDisplayAndSettings(targetResult,furmulaResult);
            break;
         case "btnPlus": // 3
-            if(mainOP.isASet()){
-            }else if(mainOP.isAandBSet()){
-                res = addStringNumber(oldText);
-                checkAndAlert(res,"Can't add number");
-                calculateAndUpdateResult();    
-            } else {
-                res = addStringNumber(oldText);
-                checkAndAlert(res,"Can't add number");
-            }    
-            mainOP.resetOp();
-            mainOP.setOp(3);
-            if(lastClick === "op"){
-                str_len = furmulaResult.textContent.length;
-                newText = furmulaResult.textContent.slice(0,str_len-1);
-                furmulaResult.textContent = newText;
-            }
-            lastClick = "op";
-            furmulaResult.textContent = oldText + "+"; 
+            updateResults4Op(oldText,targetResult,furmulaResult,3,"+");
            break;
         case "btnEq":
             res = addStringNumber(oldText);
-            checkAndAlert(res,"Can't add number");
+            checkAndAlert(res,"Can't add number before calc");
             calculateAndUpdateResult();
             lastClick = "eq";
            break; 
         case "min": // 4
-            if(mainOP.isASet()){
-            }else if(mainOP.isAandBSet()){
-                res = addStringNumber(oldText);
-                checkAndAlert(res,"Can't add number");
-                calculateAndUpdateResult();    
-            } else {
-                res = addStringNumber(oldText);
-                checkAndAlert(res,"Can't add number");
-            }    
-            mainOP.resetOp();
-            mainOP.setOp(4);
-            if(lastClick === "op"){
-                str_len = furmulaResult.textContent.length;
-                newText = furmulaResult.textContent.slice(0,str_len-1);
-                furmulaResult.textContent = newText;
-            }
-            lastClick = "op";
-            furmulaResult.textContent = oldText + "-";
+            updateResults4Op(oldText,targetResult,furmulaResult,4,"-");
            break;     
        default:
-            if((oldText === "0") || (lastClick === "op")){
+            if((oldText === "0") || (lastClick === "op") || (lastClick === "eq")){
                 targetResult.textContent = _btn.value;
             } else {
                 targetResult.textContent = oldText + _btn.value;
             }    
             var tempStr = targetResult.textContent.toString();
-            console.log(targetResult.textContent + "," + tempStr.search(/\./));
             if((tempStr.search(/\./)) >=0){
                 disableDotBtn();
             } else{
@@ -321,12 +330,61 @@ function handleBtnClick(e){
             lastClick = "number";
            break;
    }
+   this.blur();
+}
+function keyPressed(e){
+    var btn,btnName;
+    switch (e.key) {
+        case "*":
+            btn = document.getElementById("btnMul")
+            btn.click();
+            break;
+        case "/":
+            btn = document.getElementById("btnDiv")
+            btn.click();
+            break;
+        case ".":
+            btn = document.getElementById("btnDot")
+            btn.click();
+            break;
+        case "+":
+            btn = document.getElementById("btnPlus")
+            btn.click();
+            break;
+        case "=":
+        case "Enter":
+            btn = document.getElementById("btnEq")
+            btn.click();
+            break;
+        case "-":
+            btn = document.getElementById("btnMin")
+            btn.click();
+            break;
+        case "0":
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+            btnName = "btn" + e.key;
+            btn = document.getElementById(btnName)
+            if(btn){
+                btn.click();
+            }    
+        default:
+            break;
+    }
 }
 function addEventLister(){
     var btns = Array.from(document.querySelectorAll("button"));
     btns.forEach(function (btn){
         btn.addEventListener("click",handleBtnClick);
-    });  
+    }); 
+    window.addEventListener("keypress", keyPressed); 
 }
 
 
